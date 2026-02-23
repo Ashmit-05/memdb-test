@@ -50,8 +50,9 @@ class MemoryDBStore:
 
     def search_with_filter(self, query: str, filter: str):
         try:
-            f = InMemoryDBFilter.text("test_metadata").eq(filter)
+            f = InMemoryDBFilter.text("test_metadata") == filter
             print(f"FILTER EXPR: {f}")
+            print(f"FORMATTED FILTER EXPR: {f.format_expression()}")
             print(f"FILTER EXPR TYPE: {type(f)}")
             return self.vector_store.similarity_search(
                 query=query,
