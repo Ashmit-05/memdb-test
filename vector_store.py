@@ -1,6 +1,7 @@
 from langchain_aws.vectorstores import InMemoryVectorStore
 from langchain_aws import BedrockEmbeddings
-from langchain_aws.vectorstores.inmemorydb import InMemoryDBFilter, InMemoryDBFilterExpression
+from langchain_aws.vectorstores.inmemorydb import InMemoryDBFilter
+from langchain_aws.vectorstores.inmemorydb.filters import InMemoryDBFilterExpression
 import random
 
 class MemoryDBStore:
