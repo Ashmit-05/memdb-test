@@ -31,8 +31,8 @@ async def search(query: str):
         res = vector_store.search(query)
         docs = [
             {
-                doc.page_content,
-                doc.metadata
+                "page_content": getattr(doc, "page_content", str(doc)),
+                "metadata": getattr(doc, "metadata", {})
             }
             for doc in res
         ]
@@ -49,8 +49,8 @@ async def search_with_filter(query: str, filter: str):
         res = vector_store.search_with_filter(query, filter)
         docs = [
             {
-                doc.page_content,
-                doc.metadata
+                "page_content": getattr(doc, "page_content", str(doc)),
+                "metadata": getattr(doc, "metadata", {})
             }
             for doc in res
         ]
