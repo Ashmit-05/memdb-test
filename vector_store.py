@@ -1,8 +1,7 @@
 from langchain_aws.vectorstores import InMemoryVectorStore
 from langchain_aws import BedrockEmbeddings
 from langchain_aws.vectorstores.inmemorydb import InMemoryDBFilter
-from langchain_aws.vectorstores.inmemorydb.filters import InMemoryDBFilterExpression, InMemoryDBTag
-from langchain_aws.vectorstores.inmemorydb import InMemoryDBFilter
+from langchain_aws.vectorstores.inmemorydb.filters import InMemoryDBFilterExpression, InMemoryDBTag, InMemoryDBFilter
 import random
 import traceback
 
@@ -56,7 +55,7 @@ class MemoryDBStore:
 
     def search_with_filter(self, query: str, filter: str):
         try:
-            f = InMemoryDBFilter.from_expression(f"@test_metadata:{{ {filter} }}")
+            f = InMemoryDBFilter.tag("test_metadata") == filter
             # f = '@test_metadata:{the batman}' # this works btw
             print(f"FILTER EXPR: {f}")
             print(f"FILTER EXPR TYPE: {type(f)}")
