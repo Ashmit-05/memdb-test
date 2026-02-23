@@ -31,10 +31,10 @@ class MemoryDBStore:
         try:
             # Randomly assign test_metadata as 'test1' or 'test2'
             test_metadata_value = random.choice(["test1", "test2"])
-            metadata = [{"test_metadata": test_metadata_value}]
+            metadata = {"test_metadata": test_metadata_value}
             return self.vector_store.add_texts(
                 texts=[text],
-                metadatas=metadata
+                metadatas=[metadata]
             )
         except Exception as e:
             print("------- ERROR -------")
@@ -51,6 +51,8 @@ class MemoryDBStore:
     def search_with_filter(self, query: str, filter: str):
         try:
             f = InMemoryDBFilter.text("test_metadata") == filter
+            print(f"FILTER EXPR: {f}")
+            print(f"TYPE OF FILTER EXPR: {type(f)}")
             return self.vector_store.similarity_search(
                 query=query,
                 filter=f
