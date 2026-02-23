@@ -46,6 +46,7 @@ class MemoryDBStore:
         except Exception as e:
             print("------- ERROR -------")
             print(f"Unable to search: {e}")
+            return []
 
     def search_with_filter(self, query: str, filter: str):
         try:
@@ -57,5 +58,6 @@ class MemoryDBStore:
         except Exception as e:
             print("------- ERROR -------")
             print(f"Unable to search: {e}")
+            return []
 
 

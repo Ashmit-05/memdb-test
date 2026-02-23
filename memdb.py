@@ -29,9 +29,16 @@ async def upload(txt: str):
 async def search(query: str):
     try:
         res = vector_store.search(query)
+        docs = [
+            {
+                doc.page_content,
+                doc.metadata
+            }
+            for doc in res
+        ]
         return JSONResponse(content={
             "message": "Search successfull",
-            "docs": res
+            "docs": docs
         })
     except Exception as e:
         return HTTPException(status_code=500, detail=f"Unknown error: {e}")
@@ -40,9 +47,16 @@ async def search(query: str):
 async def search_with_filter(query: str, filter: str):
     try:
         res = vector_store.search_with_filter(query, filter)
+        docs = [
+            {
+                doc.page_content,
+                doc.metadata
+            }
+            for doc in res
+        ]
         return JSONResponse(content={
             "message": "Search with filter successful",
-            "docs": res
+            "docs": docs
         })
     except Exception as e:
         return JSONResponse(status_code=500, content={"message": f"Unknown error: {e}"})
