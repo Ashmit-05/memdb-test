@@ -53,8 +53,8 @@ class MemoryDBStore:
         try:
             filter_str = f'@test_metadata:"{filter}"'
             f = InMemoryDBFilterExpression(_filter=filter_str)
-            print(f"FILTER EXPR: {f}")
-            print(f"FORMATTED FILTER EXPR: {f.format_expression()}")
+            # Print the filter string directly, not format_expression()
+            print(f"FILTER EXPR: {f._filter}")
             print(f"FILTER EXPR TYPE: {type(f)}")
             return self.vector_store.similarity_search(
                 query=query,
