@@ -52,17 +52,18 @@ class MemoryDBStore:
 
     def search_with_filter(self, query: str, filter: str):
         try:
-            f = InMemoryDBFilter.text("test_metadata") == filter
-            print(f"FILTER EXPR: {f}")
-            print(f"FILTER EXPR TYPE: {type(f)}")
+            # Manually build the filter string without parentheses
+            filter_str = f'@test_metadata:"{filter}"'
+            print(f"FILTER STR: {filter_str}")
+            print(f"FILTER STR TYPE: {type(filter_str)}")
             return self.vector_store.similarity_search(
                 query=query,
-                filter=f
+                filter=filter_str
             )
         except Exception as e:
             print("------- ERROR -------")
             print(f"Unable to search: {e}")
-            traceback.print_exc()            
+            traceback.print_exc()
             return []
 
 
