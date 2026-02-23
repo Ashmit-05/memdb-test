@@ -58,7 +58,7 @@ class MemoryDBStore:
             print(f"FILTER EXPR TYPE: {type(f)}")
             return self.vector_store.similarity_search(
                 query=query,
-                filter=f
+                filter=f._filter
             )
         except Exception as e:
             print("------- ERROR -------")
