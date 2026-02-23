@@ -3,6 +3,7 @@ from langchain_aws import BedrockEmbeddings
 from langchain_aws.vectorstores.inmemorydb import InMemoryDBFilter
 from langchain_aws.vectorstores.inmemorydb.filters import InMemoryDBFilterExpression
 import random
+import traceback
 
 class MemoryDBStore:
     def __init__(self) -> None:
@@ -51,19 +52,17 @@ class MemoryDBStore:
 
     def search_with_filter(self, query: str, filter: str):
         try:
-            filter_str = f'@test_metadata: "{filter}"'
-            f = InMemoryDBFilterExpression(_filter=filter_str)
-            # Print the filter string directly, not format_expression()
-            print(f"FILTER EXPR: {f._filter}")
+            f = InMemoryDBFilter.text("test_metadata") == filter
+            print(f"FILTER EXPR: {f}")
             print(f"FILTER EXPR TYPE: {type(f)}")
             return self.vector_store.similarity_search(
                 query=query,
-                filter=f._filter
+                filter=f
             )
         except Exception as e:
             print("------- ERROR -------")
             print(f"Unable to search: {e}")
-            
+            traceback.print_exc()            
             return []
 
 
