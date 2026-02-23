@@ -56,12 +56,13 @@ class MemoryDBStore:
     def search_with_filter(self, query: str, filter: str):
         try:
             f = InMemoryDBFilter.tag("test_metadata") == filter
-            # f = '@test_metadata:{the batman}' # this works btw
-            print(f"FILTER EXPR: {f}")
+            # Remove any backslashes from the filter expression string
+            f_str = str(f).replace("\\", "")
+            print(f"FILTER EXPR (no backslashes): {f_str}")
             print(f"FILTER EXPR TYPE: {type(f)}")
             return self.vector_store.similarity_search(
                 query=query,
-                filter=f
+                filter=f_str
             )
         except Exception as e:
             print("------- ERROR -------")
