@@ -51,7 +51,7 @@ class MemoryDBStore:
 
     def search_with_filter(self, query: str, filter: str):
         try:
-            filter_str = f'@test_metadata:"{filter}"'
+            filter_str = f'@test_metadata: "{filter}"'
             f = InMemoryDBFilterExpression(_filter=filter_str)
             # Print the filter string directly, not format_expression()
             print(f"FILTER EXPR: {f._filter}")
@@ -63,6 +63,7 @@ class MemoryDBStore:
         except Exception as e:
             print("------- ERROR -------")
             print(f"Unable to search: {e}")
+            
             return []
 
 
