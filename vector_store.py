@@ -15,7 +15,10 @@ class MemoryDBStore:
                     "name": "check"
                 },
                 "tag": [
-                    {"name": "test_metadata"}
+                    {
+                        "name": "test_metadata",
+                        "separator": "|"
+                    }
                 ]
             }
             self.vector_store = InMemoryVectorStore(
