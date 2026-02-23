@@ -50,12 +50,12 @@ class MemoryDBStore:
 
     def search_with_filter(self, query: str, filter: str):
         try:
-            f = InMemoryDBFilter.text("test_metadata") == filter
-            print(f"FILTER EXPR: {f}")
-            print(f"TYPE OF FILTER EXPR: {type(f)}")
+            # Build Redisearch filter string without parentheses
+            filter_str = f'@test_metadata:"{filter}"'
+            print(f"FILTER STR: {filter_str}")
             return self.vector_store.similarity_search(
                 query=query,
-                filter=f
+                filter=filter_str
             )
         except Exception as e:
             print("------- ERROR -------")
