@@ -32,7 +32,7 @@ class MemoryDBStore:
     def add(self, text: str):
         try:
             # Randomly assign test_metadata as 'test1' or 'test2'
-            test_metadata_value = random.choice(["test1", "test2"])
+            test_metadata_value = random.choice(["fight club", "the batman"])
             metadata = {"test_metadata": test_metadata_value}
             return self.vector_store.add_texts(
                 texts=[text],
