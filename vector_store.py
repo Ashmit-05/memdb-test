@@ -2,6 +2,7 @@ from langchain_aws.vectorstores import InMemoryVectorStore
 from langchain_aws import BedrockEmbeddings
 from langchain_aws.vectorstores.inmemorydb import InMemoryDBFilter
 from langchain_aws.vectorstores.inmemorydb.filters import InMemoryDBFilterExpression
+from langchain_community.vectorstores.redis import RedisTag
 import random
 import traceback
 
@@ -14,7 +15,7 @@ class MemoryDBStore:
                 "index": {
                     "name": "test"
                 },
-                "text": [
+                "tag": [
                     {"name": "test_metadata"}
                 ]
             }
@@ -52,7 +53,7 @@ class MemoryDBStore:
 
     def search_with_filter(self, query: str, filter: str):
         try:
-            f = InMemoryDBFilter.text("test_metadata") % filter
+            f = RedisTag("test_metadata") == filter
             print(f"FILTER EXPR: {f}")
             print(f"FILTER EXPR TYPE: {type(f)}")
             return self.vector_store.similarity_search(
