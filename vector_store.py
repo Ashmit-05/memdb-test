@@ -53,7 +53,7 @@ class MemoryDBStore:
     def search_with_filter(self, query: str, filter: str):
         try:
             # Manually build the filter string without parentheses
-            filter_str = f'@test_metadata:"{filter}"'
+            filter_str = f'@test_metadata:{filter}'
             print(f"FILTER STR: {filter_str}")
             print(f"FILTER STR TYPE: {type(filter_str)}")
             return self.vector_store.similarity_search(
