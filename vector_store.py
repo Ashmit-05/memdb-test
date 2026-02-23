@@ -12,7 +12,7 @@ class MemoryDBStore:
             self.embeddings = BedrockEmbeddings(model_id="amazon.titan-embed-text-v2:0")
             self.index_schema: dict[str, list[dict]] | dict = {
                 "index": {
-                    "name": "check"
+                    "name": "check_1"
                 },
                 "tag": [
                     {
