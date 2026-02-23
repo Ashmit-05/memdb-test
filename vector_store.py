@@ -1,8 +1,7 @@
 from langchain_aws.vectorstores import InMemoryVectorStore
 from langchain_aws import BedrockEmbeddings
 from langchain_aws.vectorstores.inmemorydb import InMemoryDBFilter
-from langchain_aws.vectorstores.inmemorydb.filters import InMemoryDBFilterExpression
-from langchain_community.vectorstores.redis import RedisTag
+from langchain_aws.vectorstores.inmemorydb.filters import InMemoryDBFilterExpression, InMemoryDBTag
 import random
 import traceback
 
@@ -13,7 +12,7 @@ class MemoryDBStore:
             self.embeddings = BedrockEmbeddings(model_id="amazon.titan-embed-text-v2:0")
             self.index_schema: dict[str, list[dict]] | dict = {
                 "index": {
-                    "name": "test"
+                    "name": "check"
                 },
                 "tag": [
                     {"name": "test_metadata"}
@@ -21,7 +20,7 @@ class MemoryDBStore:
             }
             self.vector_store = InMemoryVectorStore(
                 redis_url=self.url,
-                index_name="test",
+                index_name="check",
                 embedding=self.embeddings,
                 index_schema=self.index_schema
             )
@@ -53,7 +52,7 @@ class MemoryDBStore:
 
     def search_with_filter(self, query: str, filter: str):
         try:
-            f = RedisTag("test_metadata") == filter
+            f = InMemoryDBTag("test_metadata") == filter
             print(f"FILTER EXPR: {f}")
             print(f"FILTER EXPR TYPE: {type(f)}")
             return self.vector_store.similarity_search(
