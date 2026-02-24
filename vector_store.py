@@ -71,7 +71,7 @@ class MemoryDBStore:
                 # f = InMemoryDBFilter.tag("test_metadata_2") == f'{filter}'
                 escaped_filter = filter.replace(" ", "\\ ")
                 f = InMemoryDBFilterExpression(
-                    f'"@test_metadata_2:{{{escaped_filter}}}"'
+                    f'@test_metadata_2:{{{escaped_filter}}}'
                 )
                 print(f"NORMAL INPUT: {filter}")
                 print(f"FILTER EXPR: {f}")
