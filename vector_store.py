@@ -16,8 +16,12 @@ class MemoryDBStore:
                 },
                 "tag": [
                     {
-                        "name": "test_metadata",
-                        "separator": "|"
+                        "name": "test_metadata"
+                    }
+                ],
+                "text": [
+                    {
+                        "name": "test_metadata_2"
                     }
                 ]
             }
@@ -36,7 +40,11 @@ class MemoryDBStore:
         try:
             # Randomly assign test_metadata as 'test1' or 'test2'
             test_metadata_value = random.choice(["test1", "test2"])
-            metadata = {"test_metadata": test_metadata_value}
+            test_metadata_2_value = random.choice(["the batman", "fight - club", "v (for) vendetta"])
+            metadata = {
+                "test_metadata": test_metadata_value,
+                "test_metadata_2": test_metadata_2_value
+            }
             return self.vector_store.add_texts(
                 texts=[text],
                 metadatas=[metadata]
@@ -53,23 +61,34 @@ class MemoryDBStore:
             print(f"Unable to search: {e}")
             return []
 
-    def search_with_filter(self, query: str, filter: str):
+    def search_with_filter(self, query: str, filter: str, t: int):
         try:
-            escaped_filter = self.escape_redis_text(filter)
-            # f = InMemoryDBFilter.tag("test_metadata") == filter
-            # Remove any backslashes from the filter expression string
-            f = f'@test_metadata:"{escaped_filter}"'
-            print(f"FILTER EXPR: {f}")
-            print(f"FILTER EXPR TYPE: {type(f)}")
-            return self.vector_store.similarity_search(
-                query=query,
-                filter=f
-            )
+            if(t == 0):
+                f = InMemoryDBFilter.tag("test_metadata") == filter
+                # Remove any backslashes from the filter expression string
+                print(f"FILTER EXPR: {f}")
+                print(f"FILTER EXPR TYPE: {type(f)}")
+                return self.vector_store.similarity_search(
+                    query=query,
+                    filter=f
+                )
+            elif t == 1:
+                escaped_filter = self.escape_redis_text(filter)
+                f = InMemoryDBFilter.text("test_metadata_2") == f'"{escaped_filter}"'
+                print(f"FILTER EXPR: {f}")
+                print(f"FILTER EXPR TYPE: {type(f)}")
+                return self.vector_store.similarity_search(
+                    query=query,
+                    filter=f
+                )
+            else:
+                return []
         except Exception as e:
             print("------- ERROR -------")
             print(f"Unable to search: {e}")
             traceback.print_exc()            
             return []
+
 
     def escape_redis_text(self, text: str) -> str:
         """

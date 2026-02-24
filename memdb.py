@@ -44,9 +44,9 @@ async def search(query: str):
         return HTTPException(status_code=500, detail=f"Unknown error: {e}")
 
 @app.post("/search-with-filter")
-async def search_with_filter(query: str, filter: str):
+async def search_with_filter(query: str, filter: str, t: int):
     try:
-        res = vector_store.search_with_filter(query, filter)
+        res = vector_store.search_with_filter(query, filter, t)
         docs = [
             {
                 "page_content": getattr(doc, "page_content", str(doc)),
