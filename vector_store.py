@@ -2,6 +2,7 @@ from langchain_aws.vectorstores import InMemoryVectorStore
 from langchain_aws import BedrockEmbeddings
 from langchain_aws.vectorstores.inmemorydb import InMemoryDBFilter
 from langchain_aws.vectorstores.inmemorydb.filters import InMemoryDBFilterExpression, InMemoryDBTag, InMemoryDBFilter
+from redis.commands.search.query import Query
 import random
 import traceback
 
@@ -109,3 +110,15 @@ class MemoryDBStore:
     def list_indexes(self):
         try:
             return self.redis_client.execute_command("FT._LIST")
+        except Exception as e:
+            print(f"Unable to list indexes: {e}")
+            traceback.print_exc()
+
+    def redis_client_filter_search(self, filter: str):
+        try:
+            query = Query(f"@test_metadata_2:{filter}")
+            print(f"QUERY: {query}")
+            return self.redis_client.ft("work").search(query)
+        except Exception as e:
+            print(f"Unable to fetch: {e}")
+            traceback.print_exc()
