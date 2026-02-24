@@ -118,7 +118,17 @@ class MemoryDBStore:
         try:
             query = Query(f"@test_metadata_2:{{{filter}}}")
             print(f"QUERY: {query}")
-            return self.redis_client.ft("work").search(query)
+            result = self.redis_client.ft("work").search(query)
+            return {
+                "total": result.total,
+                "docs": [
+                    {
+                        "id": doc.id,
+                        **doc.__dict__
+                    }
+                    for doc in result.docs
+                ]
+            }
         except Exception as e:
             print(f"Unable to fetch: {e}")
             traceback.print_exc()
