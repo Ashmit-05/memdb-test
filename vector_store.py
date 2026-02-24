@@ -68,7 +68,11 @@ class MemoryDBStore:
                 )
             elif t == 1:
                 # escaped_filter = self.escape_redis_text(filter)
-                f = InMemoryDBFilter.tag("test_metadata_2") == f'{filter}'
+                # f = InMemoryDBFilter.tag("test_metadata_2") == f'{filter}'
+                escaped_filter = filter.replace(" ", "\\ ")
+                f = InMemoryDBFilterExpression(
+                    f'(@test_metadata_2:{{{escaped_filter}}})'
+                )
                 print(f"NORMAL INPUT: {filter}")
                 print(f"FILTER EXPR: {f}")
                 print(f"FILTER EXPR TYPE: {type(f)}")
