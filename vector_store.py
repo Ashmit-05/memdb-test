@@ -35,7 +35,7 @@ class MemoryDBStore:
     def add(self, text: str):
         try:
             # Randomly assign test_metadata as 'test1' or 'test2'
-            test_metadata_value = random.choice(["fight club", "the batman"])
+            test_metadata_value = random.choice(["test1", "test2"])
             metadata = {"test_metadata": test_metadata_value}
             return self.vector_store.add_texts(
                 texts=[text],
@@ -55,14 +55,15 @@ class MemoryDBStore:
 
     def search_with_filter(self, query: str, filter: str):
         try:
-            f = InMemoryDBFilter.tag("test_metadata") == filter
+            escaped_filter = self.escape_redis_text(filter)
+            # f = InMemoryDBFilter.tag("test_metadata") == filter
             # Remove any backslashes from the filter expression string
-            f_str = str(f).replace("\\", "")
-            print(f"FILTER EXPR (no backslashes): {f_str}")
+            f = f'@test_metadata:"{escaped_filter}"'
+            print(f"FILTER EXPR: {f}")
             print(f"FILTER EXPR TYPE: {type(f)}")
             return self.vector_store.similarity_search(
                 query=query,
-                filter=f_str
+                filter=f
             )
         except Exception as e:
             print("------- ERROR -------")
@@ -70,4 +71,13 @@ class MemoryDBStore:
             traceback.print_exc()            
             return []
 
+    def escape_redis_text(self, text: str) -> str:
+        """
+        Escape Redis special characters for exact match search.
+        """
+        special_chars = r'@{}[]()|-><-!"~*?:\\'
+        for char in special_chars:
+            text = text.replace(char, f"\\{char}")
+        return text
+    
 
