@@ -5,6 +5,8 @@ from langchain_aws.vectorstores.inmemorydb.filters import InMemoryDBFilterExpres
 import random
 import traceback
 
+import redis
+
 class MemoryDBStore:
     def __init__(self) -> None:
         try:
@@ -26,10 +28,24 @@ class MemoryDBStore:
                 index_schema=self.index_schema
             )
             print("INITIALIZED VECTOR STORE")
+
+            self.redis_client = redis.Redis(
+                host="clustercfg.test-vector.wjegoz.memorydb.ap-south-1.amazonaws.com",
+                port=6379,
+                decode_responses=False,
+                socket_connect_timeout=5,
+                socket_timeout=5,
+                ssl=True,
+                ssl_cert_reqs=None
+            )
+
+            print("REDIS CLIENT CREATED")
         except Exception as e:
             print("--------- ERROR --------\n")
             print(f"Unable to initialize vector store: {e}")
 
+
+    ## VECTOR STORE METHODS ##
     def add(self, text: str):
         try:
             # Randomly assign test_metadata as 'test1' or 'test2'
@@ -88,14 +104,8 @@ class MemoryDBStore:
             traceback.print_exc()            
             return []
 
+    ## REDIS CLIENT METHODS ##
 
-    def escape_redis_text(self, text: str) -> str:
-        """
-        Escape Redis special characters for exact match search.
-        """
-        special_chars = r'@{}[]()|-><-!"~*?:\\'
-        for char in special_chars:
-            text = text.replace(char, f"\\{char}")
-        return text
-    
-
+    def list_indexes(self):
+        try:
+            return self.redis_client.execute_command("FT._LIST")
