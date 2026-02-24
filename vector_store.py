@@ -12,7 +12,7 @@ class MemoryDBStore:
             self.embeddings = BedrockEmbeddings(model_id="amazon.titan-embed-text-v2:0")
             self.index_schema: dict[str, list[dict]] | dict = {
                 "index": {
-                    "name": "test"
+                    "name": "work"
                 },
                 "tag": [
                     {"name": "test_metadata"},
@@ -21,7 +21,7 @@ class MemoryDBStore:
             }
             self.vector_store = InMemoryVectorStore(
                 redis_url=self.url,
-                index_name="test",
+                index_name="work",
                 embedding=self.embeddings,
                 index_schema=self.index_schema
             )
