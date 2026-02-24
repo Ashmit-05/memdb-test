@@ -116,7 +116,7 @@ class MemoryDBStore:
 
     def redis_client_filter_search(self, filter: str):
         try:
-            query = Query(f"@test_metadata_2:{filter}")
+            query = Query(f"@test_metadata_2:{{{filter}}}")
             print(f"QUERY: {query}")
             return self.redis_client.ft("work").search(query)
         except Exception as e:
