@@ -2,6 +2,7 @@ from langchain_aws.vectorstores import InMemoryVectorStore
 from langchain_aws import BedrockEmbeddings
 from langchain_aws.vectorstores.inmemorydb import InMemoryDBFilter
 from langchain_aws.vectorstores.inmemorydb.filters import InMemoryDBFilterExpression, InMemoryDBTag, InMemoryDBFilter
+from langchain_core.documents import Document
 from redis.commands.search.query import Query
 import random
 import traceback
@@ -139,15 +140,15 @@ class MemoryDBStore:
             )
 
             formatted = [
-                {
-                    "page_content": doc.content,
-                    "metadata": {
+                Document(
+                    page_content=doc.content,
+                    metadata={
                         "id": doc.id,
                         "test_metadata": doc.test_metadata,
                         "test_metadata_2": doc.test_metadata_2,
                         "score": float(doc.score),
                     }
-                }
+                )
                 for doc in result.docs
             ]
 

@@ -80,13 +80,20 @@ async def get_indexes():
 async def redis_client_filter(query: str, filter: str):
     try:
         docs = vector_store.redis_client_filter_search(query, filter)
+        docs_dict = [
+            {
+                "page_content": doc.page_content,
+                "metadata": doc.metadata
+            }
+            for doc in docs
+        ]
 
         print("------------- DOCS AFTER REDIS CLIENT SEARCH ------------------")
-        print(docs)
+        print(docs_dict)
 
         return JSONResponse(content={
             "message": "Search with filter successful",
-            "docs": docs
+            "docs": docs_dict
         })
     except Exception as e:
         return JSONResponse(status_code=500, content={"message": f"Unknown error: {e}"})
