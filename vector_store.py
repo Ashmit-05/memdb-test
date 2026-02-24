@@ -5,6 +5,7 @@ from langchain_aws.vectorstores.inmemorydb.filters import InMemoryDBFilterExpres
 from redis.commands.search.query import Query
 import random
 import traceback
+import numpy as np
 
 import redis
 
@@ -120,12 +121,22 @@ class MemoryDBStore:
             print(f"Unable to list indexes: {e}")
             traceback.print_exc()
 
-    def redis_client_filter_search(self, filter: str):
+    def redis_client_filter_search(self,query: str, filter: str):
         try:
             safe_filter = escape_tag_value(filter)
-            query = Query(f"@test_metadata_2:{{{safe_filter}}}")
-            print(f"QUERY: {query}")
-            result = self.redis_client.ft("work").search(query)
+            embedding = self.embeddings.embed_query(query)
+            embedding_bytes = np.array(embedding, dtype=np.float32).tobytes()
+
+            q = (
+                Query(f"@test_metadata_2:{{{safe_filter}}}")
+                .knn("content_vector", 5, embedding_bytes)
+                .return_fields("content", "test_metadata", "test_metadata_2", "score")
+                .sort_by("score")
+                .dialect(2)
+            )
+
+            result = self.redis_client.ft("work").search(q)
+
             formatted = [
                 {
                     "page_content": doc.content,
@@ -133,10 +144,12 @@ class MemoryDBStore:
                         "id": doc.id,
                         "test_metadata": doc.test_metadata,
                         "test_metadata_2": doc.test_metadata_2,
+                        "score": float(doc.score),
                     }
                 }
                 for doc in result.docs
             ]
+
             return formatted
         except Exception as e:
             print(f"Unable to fetch: {e}")

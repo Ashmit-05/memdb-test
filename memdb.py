@@ -77,9 +77,9 @@ async def get_indexes():
         return JSONResponse(status_code=500, content={"message": f"Unknown error: {e}"})
 
 @app.post("/redis-client-filter")
-async def redis_client_filter(filter: str):
+async def redis_client_filter(query: str, filter: str):
     try:
-        docs = vector_store.redis_client_filter_search(filter)
+        docs = vector_store.redis_client_filter_search(query, filter)
 
         print("------------- DOCS AFTER REDIS CLIENT SEARCH ------------------")
         print(docs)
