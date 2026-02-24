@@ -127,15 +127,16 @@ class MemoryDBStore:
             embedding = self.embeddings.embed_query(query)
             embedding_bytes = np.array(embedding, dtype=np.float32).tobytes()
 
-            q = (
-                Query(f"@test_metadata_2:{{{safe_filter}}}")
-                .knn("content_vector", 5, embedding_bytes)
-                .return_fields("content", "test_metadata", "test_metadata_2", "score")
-                .sort_by("score")
-                .dialect(2)
-            )
+            q = Query(
+                f"(@test_metadata_2:{{{safe_filter}}})=>[KNN 5 @content_vector $vec AS score]"
+            ).sort_by("score") \
+            .return_fields("content", "test_metadata", "test_metadata_2", "score") \
+            .dialect(2)
 
-            result = self.redis_client.ft("work").search(q)
+            result = self.redis_client.ft("work").search(
+                q,
+                query_params={"vec": embedding_bytes}
+            )
 
             formatted = [
                 {
