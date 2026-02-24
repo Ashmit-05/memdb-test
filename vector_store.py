@@ -12,22 +12,18 @@ class MemoryDBStore:
             self.embeddings = BedrockEmbeddings(model_id="amazon.titan-embed-text-v2:0")
             self.index_schema: dict[str, list[dict]] | dict = {
                 "index": {
-                    "name": "check_2"
+                    "name": "check_3"
                 },
                 "tag": [
                     {
-                        "name": "test_metadata"
-                    }
-                ],
-                "text": [
-                    {
+                        "name": "test_metadata",
                         "name": "test_metadata_2"
                     }
                 ]
             }
             self.vector_store = InMemoryVectorStore(
                 redis_url=self.url,
-                index_name="check_2",
+                index_name="check_3",
                 embedding=self.embeddings,
                 index_schema=self.index_schema
             )
@@ -74,7 +70,7 @@ class MemoryDBStore:
                 )
             elif t == 1:
                 escaped_filter = self.escape_redis_text(filter)
-                f = InMemoryDBFilter.text("test_metadata_2") == f'{escaped_filter}'
+                f = InMemoryDBFilter.tag("test_metadata_2") == f'{escaped_filter}'
                 print(f"FILTER EXPR: {f}")
                 print(f"FILTER EXPR TYPE: {type(f)}")
                 return self.vector_store.similarity_search(
