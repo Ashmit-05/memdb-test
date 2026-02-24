@@ -8,6 +8,12 @@ import traceback
 
 import redis
 
+import re
+
+def escape_tag_value(value: str) -> str:
+    # Escape RediSearch TAG special characters
+    return re.sub(r'([\-{}\[\]\(\)\|])', r'\\\1', value)
+
 class MemoryDBStore:
     def __init__(self) -> None:
         try:
@@ -116,7 +122,8 @@ class MemoryDBStore:
 
     def redis_client_filter_search(self, filter: str):
         try:
-            query = Query(f"@test_metadata_2:{{{filter}}}")
+            safe_filter = escape_tag_value(filter)
+            query = Query(f"@test_metadata_2:{{{safe_filter}}}")
             print(f"QUERY: {query}")
             result = self.redis_client.ft("work").search(query)
             formatted = [
