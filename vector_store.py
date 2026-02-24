@@ -69,8 +69,9 @@ class MemoryDBStore:
                     filter=f
                 )
             elif t == 1:
-                escaped_filter = self.escape_redis_text(filter)
-                f = InMemoryDBFilter.tag("test_metadata_2") == f'{escaped_filter}'
+                # escaped_filter = self.escape_redis_text(filter)
+                f = InMemoryDBFilter.tag("test_metadata_2") == f'{filter}'
+                print(f"NORMAL INPUT: {filter}")
                 print(f"FILTER EXPR: {f}")
                 print(f"FILTER EXPR TYPE: {type(f)}")
                 return self.vector_store.similarity_search(
