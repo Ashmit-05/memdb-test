@@ -117,7 +117,11 @@ class MemoryDBStore:
 
     def list_indexes(self):
         try:
-            return self.redis_client.execute_command("FT._LIST")
+            indexes = self.redis_client.execute_command("FT._LIST")
+            return [
+                idx.decode("utf-8") if isinstance(idx, bytes) else idx
+                for idx in indexes
+            ]
         except Exception as e:
             print(f"Unable to list indexes: {e}")
             traceback.print_exc()
